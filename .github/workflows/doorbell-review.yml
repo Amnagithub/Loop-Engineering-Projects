@@ -1,0 +1,143 @@
+# Project 6 — the Doorbell loop.
+#
+# Fires automatically when a Pull Request touches loop6. This is the heartbeat:
+# the PR event IS the doorbell ring; no human prompt is needed to wake a review.
+#
+# Two signals are posted on the PR:
+#   1. A deterministic review from the test suite (no API key required).
+#   2. A Claude Code skill-review, gated on the ANTHROPIC_API_KEY secret.
+#
+# Requires: repo GitHub Action secret `ANTHROPIC_API_KEY` for the Claude review
+# (the deterministic review works without it). GitHub Actions must be enabled.
+
+name: Doorbell review (Project 6)
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+    paths:
+      - "loop-practice/loopprojects/loop6/**"
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  ring:
+    runs-on: ubuntu-latest
+    env:
+      HAS_ANTHROPIC_KEY: ${{ secrets.ANTHROPIC_API_KEY != '' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      # --- Ring 1: the deterministic signal (tests never lie) ----------------
+      - name: Ring 1 - run the doorbell suite
+        id: suite
+        shell: bash
+        run: |
+          cd loop-practice/loopprojects/loop6
+          set +e
+          python3 test_buggy.py > suite.log 2>&1
+          ec=$?
+          set -e
+          mv suite.log "$GITHUB_WORKSPACE/suite.log"
+          echo "status=$ec" >> "$GITHUB_OUTPUT"
+          echo "suite exit code: $ec"
+          sed -n '1,80p' "$GITHUB_WORKSPACE/suite.log"
+
+      # --- Ring 2: Claude Code skill-review (optional, needs the secret) ------
+      # Verify the action input names below against the current
+      # anthropics/claude-code-action README if this step ever errors.
+      - name: Ring 2 - Claude Code review
+        if: env.HAS_ANTHROPIC_KEY == 'true'
+        continue-on-error: true
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        uses: anthropics/claude-code-action@v1
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          prompt: |
+            You are the automated Doorbell reviewer for Project 6. A Pull
+            Request opened in this repo rang the bell; you were woken by the
+            event, not by a human. Review the loop6 code as it exists in the PR
+            head against its written contract and report strictly.
+
+            Steps:
+            1. Read loop-practice/loopprojects/loop6/skills/review-skill.md for
+               the spec and the review contract (VERDICT: FAIL / PASS).
+            2. Read loop-practice/loopprojects/loop6/buggy.py and reason about
+               handle_all(["front_door", "back_door", "gate"], handler).
+            3. Run the tests: cd loop-practice/loopprojects/loop6 && python3
+               test_buggy.py
+            4. Write your review to the file .doorbell_review.md at the repo
+               root. First line: "VERDICT: FAIL" or "VERDICT: PASS". On FAIL,
+               then report the file and line, the wrong behavior, which test
+               fails, and the minimal correct change. On PASS, say the suite
+               passed and stop - no invented nitpicks.
+
+            Do NOT modify the meaning of any file, do NOT call gh, and do NOT
+            use network tools. You are read-only except for writing the review
+            file.
+
+      # --- Ring 3: post the automatic review on the PR -----------------------
+      - name: Ring 3 - post the automatic review
+        id: comment
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require("fs");
+            const cwd = process.env.GITHUB_WORKSPACE;
+            const suitePath = cwd + "/suite.log";
+            const reviewPath = cwd + "/.doorbell_review.md";
+            const suiteLog = fs.existsSync(suitePath)
+              ? fs.readFileSync(suitePath, "utf8").slice(-3000)
+              : "(suite did not run)";
+            const review = fs.existsSync(reviewPath)
+              ? fs.readFileSync(reviewPath, "utf8").slice(0, 6000)
+              : null;
+            const suiteFailed = Number("${{ steps.suite.outputs.status }}") !== 0;
+            const verdict = review
+              ? (review.includes("VERDICT: FAIL") ? "FAIL" : "PASS")
+              : (suiteFailed ? "FAIL" : "PASS");
+            core.setOutput("verdict", verdict);
+
+            const parts = [];
+            parts.push("## 🔔 Doorbell review - automatic (no prompt typed)");
+            parts.push("");
+            parts.push("**Verdict: " + verdict + "**");
+            parts.push("");
+            if (review) {
+              parts.push("### Claude Code review");
+              parts.push("");
+              parts.push("```markdown");
+              parts.push(review);
+              parts.push("```");
+            } else {
+              parts.push("_Claude skill-review not run (set the " +
+                "`ANTHROPIC_API_KEY` repo secret to enable it). " +
+                "Showing the test signal instead._");
+            }
+            parts.push("### Test run");
+            parts.push("");
+            parts.push("```text");
+            parts.push(suiteLog);
+            parts.push("```");
+
+            const body = parts.join("\n");
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: body,
+            });
+
+      # --- Ring 4: a FAIL leaves a red check so CI reflects the verdict -------
+      - name: Ring 4 - the bell does not lie
+        if: steps.comment.outputs.verdict == 'FAIL'
+        shell: bash
+        run: |
+          echo "Doorbell verdict is FAIL - see the automatic review comment on this PR."
+          echo "If this surprises you, compare loop-practice/loopprojects/loop6/buggy.py against skills/review-skill.md."
+          exit 1
