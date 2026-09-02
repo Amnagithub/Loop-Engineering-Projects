@@ -7,12 +7,12 @@ its memory.
 
 ## Last Run
 
-- **Run:** 0
-- **When:** —
-- **Result:** — _(SUCCESS | FAILED | ESCALATED | HOLD)_
-- **Reason:** —
-- **Consecutive failures:** 0
-- **State:** RUNNING _(RUNNING | NEEDS_HUMAN)_
+- **Run:** 3
+- **When:** 2026-09-06
+- **Result:** ESCALATED
+- **Reason:** `source/daily-brief.txt not found`
+- **Consecutive failures:** 3
+- **State:** NEEDS_HUMAN _(RUNNING | NEEDS_HUMAN)_
 
 ## Findings
 
@@ -29,4 +29,7 @@ _(Things surfaced to a human in earlier beats so they aren't repeated.)_
 _(Anything a person must decide or act on. This section must stay empty only
 while nothing needs a human.)_
 
-- _none yet_
+- **2026-09-06** — **What failed:** `source/daily-brief.txt not found` — the task could not be completed.
+  **Since when:** 2026-09-04. **Attempts:** 3 consecutive daily attempts.
+  **Loop action:** stopped retrying — State set to `NEEDS_HUMAN`.
+  **First thing to check:** does `source/daily-brief.txt` exist?

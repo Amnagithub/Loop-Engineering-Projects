@@ -7,9 +7,11 @@ spine files are the memory. Work **only inside this folder**.
 ## What a beat does (in order)
 
 0. **Check the hold.** Read the `State` value in `progress.md` → `## Last Run`.
-   - If it is `NEEDS_HUMAN`: do **NOT** attempt the task. Append one
-     `loop-log.md` row: `HOLD — escalated, waiting on human`. Reply
-     `RUN <n> COMPLETE — HOLD` and stop.
+   - If it is `NEEDS_HUMAN`: do **NOT** attempt the task and do **NOT** advance
+     the `Run` counter or touch `## Last Run`. Append one `loop-log.md` row with
+     the current date and `HOLD` in the Result column, note
+     `escalated, waiting on human`. Reply `BEAT HOLD — escalated, no new run`
+     and stop.
 1. **Read the spine.** Read `progress.md`, then `loop-log.md`.
 2. **Deliver today's brief.** Read the file `source/daily-brief.txt`.
    - **SUCCESS path:** the file exists and is non-empty. Copy its text into
