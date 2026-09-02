@@ -20,5 +20,6 @@
 - **Reviewer:** re-read `loopprojects/skills/fix-skill.md` + full diff → **PASS**
   (diff limited to the two buggy lines, `test_buggy.py` untouched, both expected
   values hold).
-- **Push/PR:** pending — needs GitHub authentication (no `gh` CLI, no stored
-  credentials).
+- **Push:** `main` → `4a8e505`, `fix/project4-bugs` → `ee0a230` (both on `origin`).
+- **PR:** opened — https://github.com/Amnagithub/Loop-Engineering-Projects/pull/1
+  (base `main`, head `fix/project4-bugs`; diff = `buggy.py` only).

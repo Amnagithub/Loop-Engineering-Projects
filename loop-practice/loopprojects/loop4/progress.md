@@ -32,5 +32,8 @@
 - Tests: `test_buggy.py` → "All tests passed!" (2/2). Test file untouched.
 - Reviewer verdict: **PASS** — the diff matches every criterion in
   `loopprojects/skills/fix-skill.md`.
-- Push/PR step: needs GitHub authentication (`gh` CLI not installed, no stored
-  credentials), so it is pending user sign-in.
+- Pushed `main` (`4a8e505`, buggy baseline + docs) and `fix/project4-bugs`
+  (`ee0a230`) to `origin`.
+- **PR opened:** [Amnagithub/Loop-Engineering-Projects#1](https://github.com/Amnagithub/Loop-Engineering-Projects/pull/1)
+  — base `main`, head `fix/project4-bugs`; diff is exactly `buggy.py`
+  (mergeable, 1 file changed). Created after the Reviewer PASS.
