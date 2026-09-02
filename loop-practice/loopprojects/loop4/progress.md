@@ -19,3 +19,18 @@
 - Reviewer verdict: **PASS** (matches all criteria in `skills/fix-skill.md`).
 - PR step: **blocked** — no git remote configured and `gh` CLI not installed,
   so `git push` fails and no PR can be opened from this environment.
+
+## GitHub-Connected Re-run (2026-09-02)
+
+- `main` had been snapshotted in the already-fixed form, so the canonical
+  Project-4 start state was restored on `main` (commit `3d8c69d`): both
+  intentional bugs are back and `test_buggy.py` fails as the README expects.
+- Implementer created branch `fix/project4-bugs` off the buggy `main` and fixed
+  both bugs (commit `ee0a230`):
+  - `calculate_total` → `price * quantity`
+  - `countdown` → `range(n, -1, -1)` (includes 0)
+- Tests: `test_buggy.py` → "All tests passed!" (2/2). Test file untouched.
+- Reviewer verdict: **PASS** — the diff matches every criterion in
+  `loopprojects/skills/fix-skill.md`.
+- Push/PR step: needs GitHub authentication (`gh` CLI not installed, no stored
+  credentials), so it is pending user sign-in.
