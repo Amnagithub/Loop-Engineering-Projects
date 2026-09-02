@@ -6,10 +6,10 @@ fix the code so all tests pass, then stop.
 
 
 def calculate_total(price, quantity):
-    # FIXED: returns price * quantity
-    return price * quantity
+    # BUG: adds price + quantity instead of multiplying
+    return price + quantity
 
 
 def countdown(n):
-    # FIXED: includes 0 — range(n, -1, -1)
-    return list(range(n, -1, -1))
+    # BUG: off-by-one — range stops at 1, so 0 is missing
+    return list(range(n, 0, -1))
