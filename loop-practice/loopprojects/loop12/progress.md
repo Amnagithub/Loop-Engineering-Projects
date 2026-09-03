@@ -4,10 +4,11 @@ The meta-loop: it dreams over the other loops' dated logs, finds a failure/corre
 
 ## Last dream
 
-- **Run:** 0
-- **Date:** 2026-09-02
-- **State:** IDLE
-- **Branch:** —
+- **Run:** 1
+- **Date:** 2026-09-03
+- **State:** PROPOSED
+- **Branch:** claude/dream-1
+- **Proposal:** Add rule: start headless claude -p children in a trusted dir
 
 ## Needs human
 

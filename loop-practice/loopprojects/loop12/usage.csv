@@ -1,0 +1,3 @@
+run,date,phase,attempt,input_tokens,output_tokens,cache_read,result
+1,2026-09-03,dreamer,1,40091,13044,337664,OK
+1,2026-09-03,checker,1,27870,6418,156160,PASS

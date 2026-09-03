@@ -1,0 +1,39 @@
+{
+  "summary": "Runs 5 and 6 of the loop12e staging drill (2026-09-03) both FAILED with the same stall: a headless `claude -p` child was started in an untrusted temp dir and blocked on the folder-trust prompt, hanging the beat. No shared rule tells a loop where a headless claude child may start, so I propose one small new shared skill — start headless `claude -p` children only in an already-trusted directory — and delete the unfilled placeholder stub `maker-checker-fix.md` from the same corpus.",
+  "repeated_failure": {
+    "theme": "A headless `claude -p` child started in an untrusted temp dir blocks on the folder-trust prompt and stalls the beat.",
+    "how_many_occurrences": 2,
+    "occurrences": [
+      {
+        "file": "loop-practice/loopprojects/loop12/observed-runs.md",
+        "line": 20,
+        "date": "2026-09-03",
+        "run": "5",
+        "excerpt": "| 5 | loop12e staging | 2026-09-03 | FAILED | beat stalled: headless claude -p child ran in an untrusted temp dir and blocked on the folder-trust prompt |"
+      },
+      {
+        "file": "loop-practice/loopprojects/loop12/observed-runs.md",
+        "line": 21,
+        "date": "2026-09-03",
+        "run": "6",
+        "excerpt": "| 6 | loop12e staging | 2026-09-03 | FAILED | beat stalled: headless claude -p child ran in an untrusted temp dir and blocked on the folder-trust prompt |"
+      }
+    ],
+    "why_repeats": "A headless `claude -p` child has no interactive user, so when its working directory is one Claude has never seen (a freshly created temp dir) the folder-trust prompt has no one to answer it and the child blocks forever. Nothing in the shared `skills/` corpus told loops to start such children only in an already-trusted directory, so the same stall recurred (run 5 then run 6) with no rule to stop it."
+  },
+  "rule_change": {
+    "action": "add",
+    "path": "loop-practice/loopprojects/skills/headless-claude-trusted-dir.md",
+    "content": "---\nname: headless-claude-trusted-dir\ndescription: Use whenever a loop engine spawns a headless `claude -p` subprocess. The child must start in a directory Claude already trusts, or it will block on the folder-trust prompt and the beat will stall. Applies to any loop in the loop-practice repo that drives a headless claude child.\n---\n\n# Start headless `claude -p` children only in a trusted directory\n\n## The rule\n\nA headless `claude -p` child has no interactive user to answer the Claude Code\nfolder-trust prompt. If you start it in a directory it has never seen (a fresh\ntemp dir), it blocks on \"do you trust this folder?\" and the beat hangs.\n\n- **DO** set the child's working directory to the loop repo root or another\n  path already marked trusted.\n- **DO** reuse one stable scratch directory across beats so trust is granted\n  once, in an interactive session, not in the middle of a headless run.\n- **DON'T** run `claude -p` inside a freshly created temp dir\n  (`tempfile.TemporaryDirectory()`, `mktemp -d`) before that dir is trusted.\n- If a new directory must be used, trust it interactively first — never expect\n  the folder-trust prompt to be answered headlessly.\n\n## PASS / FAIL\n\n- **PASS:** every headless `claude -p` child a loop spawns starts in a\n  directory already marked trusted; no beat ever waits on a trust prompt.\n- **FAIL:** a beat stalls with a headless child waiting on the folder-trust\n  prompt (a log line such as \"blocked on the folder-trust prompt\").\n",
+    "why_minimal": "The repeat has one root cause: a headless claude child started in an untrusted directory blocks on an interactive prompt no one can answer. A single imperative rule (\"start headless `claude -p` children only in an already-trusted directory\", with a do/don't list and PASS/FAIL check) removes the cause at its source. No engine change, timeout machinery, or conventions essay is needed; the shared corpus has no existing rule covering child-process trust, so adding one small new file is the smallest change that helps."
+  },
+  "deletion": {
+    "path": "loop-practice/loopprojects/skills/maker-checker-fix.md",
+    "reason": "Unfilled placeholder stub. Its frontmatter description reads \"Placeholder — fill in with the maker-checker skill definition.\" and its body is \"Placeholder stub. Add the skill's instructions, triggers, and workflow here.\" It was never completed, and the real maker/checker contracts now live as per-loop skills (loop8 `maker-skill.md`/`checker-skill.md`, loop6 `review-skill.md`, loop12 dreamer/checker skills), so the stub is dead weight no loop loads.",
+    "checked": "Read the file at loop-practice/loopprojects/skills/maker-checker-fix.md (lines 1-9): it is a self-described placeholder with no instructions. Grepped loop-practice/loopprojects for \"maker-checker-fix\": the only hits are the file's own name/heading and two observational existence mentions in loop3/progress.md lines 19 and 25 (\"skills/ folder (currently one file: maker-checker-fix.md)\" and \"skills still holds maker-checker-fix.md\") — descriptions that the file exists, which do not count as a reason to keep it."
+  },
+  "pr": {
+    "title": "Add rule: start headless claude -p children in a trusted dir",
+    "body": "**Repeated failure:** Runs 5 and 6 of the loop12e staging drill FAILED on 2026-09-03 (`loop-practice/loopprojects/loop12/observed-runs.md` lines 20-21) with the same signature: \"beat stalled: headless claude -p child ran in an untrusted temp dir and blocked on the folder-trust prompt\". Two distinct dated records show the same stall — a proven repeat.\n\n**Why the rule change helps:** nothing in the shared `skills/` corpus told loops where a headless `claude -p` child may start, so the same stall happened twice with no rule to stop it. The added skill `headless-claude-trusted-dir.md` gives loops one actionable imperative — start headless claude children only in a directory Claude already trusts, never in a fresh untrusted temp dir — which removes the interactive trust prompt a headless child cannot answer. Any loop that spawns a headless child (drill harnesses, gates, staging beats) is covered.\n\n**Deletion:** `loopprojects/skills/maker-checker-fix.md` is an unfilled placeholder stub (\"Placeholder — fill in with the maker-checker skill definition.\"). Real maker/checker contracts live per-loop (loop8 `maker-skill.md`/`checker-skill.md`), and the only references to the stub anywhere in `loopprojects/` are observational \"skills/ holds maker-checker-fix.md\" notes in loop3/progress.md (lines 19, 25) — existence mentions, not uses. Delete it."
+  }
+}
