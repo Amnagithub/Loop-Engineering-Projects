@@ -1,0 +1,15 @@
+{
+  "project": "loop8",
+  "chore": "daily whole-word TODO/FIXME/HACK/XXX debt scan",
+  "created": "2026-09-03",
+  "run": 0,
+  "last_date": null,
+  "result": null,
+  "reason": null,
+  "state": "RUNNING",
+  "consecutive_failures": 0,
+  "open_markers": [],
+  "reported": [],
+  "findings_history": [],
+  "notes": []
+}
