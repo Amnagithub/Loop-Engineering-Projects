@@ -1,0 +1,43 @@
+Two-Routine Gate - executed demo (run 01 success + refusals, run 02 refusals + recovery)
+Generated: 2026-09-03T07:30:27Z   repo HEAD: 654e281
+
+===================================================================
+1) TAGS CREATED BY ROUTINE B (each fired once, by a human's curl)
+===================================================================
+loop11/gate-01
+loop11/gate-02
+
+B_acted events in transcript: 2
+
+===================================================================
+2) MESSAGE ATTACHED TO loop11/gate-01 (== the plan the human reviewed)
+===================================================================
+tag loop11/gate-01
+Tagger: Amna Kh <159718236+Amnagithub@users.noreply.github.com>
+
+loop11/gate-01: approve Project 11 gate run 01
+
+This annotated tag marks commit 654e281d6e20 (loop10: fix single-arm exit codes in the drill harness) as the
+
+===================================================================
+3) TRANSCRIPT (ledger.jsonl) - refusal + action events, in order
+===================================================================
+{"t": "2026-09-03T07:26:07+00:00", "event": "A_drafted", "run": "01", "actor": "routine-a", "plan_path": "loop-practice/loopprojects/loop11/runs/01/plan.md", "plan_sha256": "0667b2517338a4d4e100c2444006ef76f324247ce646849e303ceb81b4480276", "tag": "loop11/gate-01", "target_commit": "654e281d6e20661020384a483da59b31986892b0", "phase": "AWAITING_REVIEW"}
+{"t": "2026-09-03T07:26:07+00:00", "event": "B_fire_refused", "run": "01", "channel": "http", "reason": "no_approval", "detail": "phase is 'AWAITING_REVIEW'; a human has not approved this plan. Routine B only acts after human approval.", "phase": "AWAITING_REVIEW"}
+{"t": "2026-09-03T07:26:08+00:00", "event": "human_approved", "run": "01", "actor": "human", "plan_sha256": "0667b2517338a4d4e100c2444006ef76f324247ce646849e303ceb81b4480276", "token_fp": "853b12d91533", "phase": "APPROVED"}
+{"t": "2026-09-03T07:26:18+00:00", "event": "B_acted", "run": "01", "channel": "http", "tag": "loop11/gate-01", "target_commit": "654e281d6e20661020384a483da59b31986892b0", "token_fp": "853b12d91533", "phase": "DONE"}
+{"t": "2026-09-03T07:27:05+00:00", "event": "B_fire_refused", "run": "01", "channel": "http", "reason": "already_done", "detail": "Routine B already acted for run 01 (tag loop11/gate-01). The action happens exactly once.", "phase": "DONE"}
+{"t": "2026-09-03T07:27:06+00:00", "event": "A_drafted", "run": "02", "actor": "routine-a", "plan_path": "loop-practice/loopprojects/loop11/runs/02/plan.md", "plan_sha256": "687810179a0bf7f01cbb33bda1c1698ef908132e3fc9c62dca585d6e30442462", "tag": "loop11/gate-02", "target_commit": "654e281d6e20661020384a483da59b31986892b0", "phase": "AWAITING_REVIEW"}
+{"t": "2026-09-03T07:27:06+00:00", "event": "human_approved", "run": "02", "actor": "human", "plan_sha256": "687810179a0bf7f01cbb33bda1c1698ef908132e3fc9c62dca585d6e30442462", "token_fp": "483af4aed3a9", "phase": "APPROVED"}
+{"t": "2026-09-03T07:27:16+00:00", "event": "B_fire_refused", "run": "02", "channel": "http", "reason": "hash_mismatch", "detail": "claimed plan_sha256 does not match the approved plan. Routine B only runs the plan the human approved.", "phase": "APPROVED"}
+{"t": "2026-09-03T07:27:17+00:00", "event": "B_fire_refused", "run": "02", "channel": "http", "reason": "plan_changed", "detail": "plan.md changed after human approval; Routine B will not execute an unreviewed plan.", "phase": "APPROVED"}
+{"t": "2026-09-03T07:27:17+00:00", "event": "B_acted", "run": "02", "channel": "http", "tag": "loop11/gate-02", "target_commit": "654e281d6e20661020384a483da59b31986892b0", "token_fp": "483af4aed3a9", "phase": "DONE"}
+
+===================================================================
+4) HOW THE REFUSALS READ OVER THE API (observed during the run)
+===================================================================
+fire BEFORE approval:        HTTP 403  reason=no_approval   (phase AWAITING_REVIEW)
+fire with wrong token:       HTTP 403  reason=bad_token
+fire with wrong plan hash:   HTTP 409  reason=hash_mismatch
+fire after plan edited:      HTTP 409  reason=plan_changed
+fire after already acted:    HTTP 409  reason=already_done   (phase DONE)

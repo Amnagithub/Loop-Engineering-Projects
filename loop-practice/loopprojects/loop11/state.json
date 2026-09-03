@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "phase": "PENDING",
+  "run": null,
+  "plan_path": null,
+  "plan_sha256": null,
+  "tag": null,
+  "target_commit": null,
+  "created_at": null,
+  "approved_at": null,
+  "fired_at": null,
+  "fired_token_fp": null
+}

@@ -1,0 +1,7 @@
+# The approval token is minted by `approve` and must NEVER be committed:
+# a gitignored file never reaches a Routine's clone, which is what keeps
+# Routine B un-fireable by anything except the human who approved.
+.approval-token
+
+__pycache__/
+*.pyc
