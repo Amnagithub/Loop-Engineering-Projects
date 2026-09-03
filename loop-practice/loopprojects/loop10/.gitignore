@@ -1,0 +1,8 @@
+# Secrets: never track a .env file. A gitignored file never reaches a
+# Routine's clone, so any secret that lives only in .env is lost in the cloud.
+.env
+
+# Python + drill scratch
+__pycache__/
+*.pyc
+.drill-clone/
