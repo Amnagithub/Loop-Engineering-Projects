@@ -237,6 +237,8 @@ def main(argv: list[str]) -> int:
         for line in lines:
             print(f"        {line}")
         outcomes["1-local"] = outcome
+        if mode == "local":
+            return 0 if outcome == "SUCCESS" else 1
 
     clone_drill: Path | None = None
     if mode in ("all", "cloud", "panel"):
@@ -255,7 +257,7 @@ def main(argv: list[str]) -> int:
                   "lesson).")
             print("  Exit code 1 mirrors the failure so scripts see it as a "
                   "failure.")
-            return 0 if outcome != "SUCCESS" else 1
+            return 0 if outcome == "SUCCESS" else 1
 
     if mode in ("all", "panel"):
         outcome, lines = arm_panel(clone_drill, value)  # type: ignore[arg-type]

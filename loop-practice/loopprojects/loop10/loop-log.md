@@ -8,3 +8,4 @@
 | 4 | Confirmed `git check-ignore -v drill/.env` matches; committed loop10 WITHOUT `.env` | done |
 | 5 | Ran full drill: local SUCCESS, cloud FAIL (.env absent in clone), panel SUCCESS; `DRILL PASS` | done |
 | 6 | Ran failing version alone (`cloud`, exit 1) and successful version alone (`panel`, exit 0) | done |
+| 7 | Fixed two single-arm exit-code bugs in `run-drill.py` (inverted `cloud` return; `local` fell into `summary()`); re-verified all modes | done |
