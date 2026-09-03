@@ -186,16 +186,20 @@ def find_claude() -> str:
 
 def run_agent(claude: str, prompt: str, out_json: Path, cwd: Path,
               allowed: str) -> dict:
-    """Run one headless `claude -p` child; persist JSON + stderr."""
+    """Run one headless `claude -p` child; persist JSON + stderr.
+
+    The prompt travels on STDIN, not as an argv element: prompts are long and
+    full of embedded double quotes, and Python's Windows argv quoting mangles
+    them so the child would see an empty prompt ("Input must be provided...").
+    """
     cmd = [claude, "-p", "--output-format", "json",
            "--permission-mode", "acceptEdits",
            "--no-session-persistence",
-           "--allowedTools", allowed,
-           prompt]
+           "--allowedTools", allowed]
     stderr_path = out_json.with_suffix(".stderr")
     try:
-        proc = subprocess.run(cmd, capture_output=True, text=True,
-                              encoding="utf-8", errors="replace",
+        proc = subprocess.run(cmd, input=prompt, capture_output=True,
+                              text=True, encoding="utf-8", errors="replace",
                               timeout=1200, cwd=str(cwd), env=ENV)
     except subprocess.TimeoutExpired:
         return {"ok": False, "text": "", "usage": None,
@@ -523,8 +527,9 @@ def run_beat(claude: str, today: str, max_attempts: int) -> int:
             if not draft or draft == {}:
                 raise ValueError("empty proposal")
         except Exception:
-            last_check = "The Dreamer did not write a valid proposal JSON to " \
-                         "<proposal_path>." + (f" ({out['err']})" if out['err'] else "")
+            last_check = (f"The Dreamer did not write a valid proposal JSON to "
+                          f"{proposal_path} (it must overwrite that file). "
+                          + (out["err"] if out["err"] else ""))
             continue
         # CHECKER (fresh, read-only)
         ck = run_agent(claude, checker_prompt(scan_json_path, proposal_path),
