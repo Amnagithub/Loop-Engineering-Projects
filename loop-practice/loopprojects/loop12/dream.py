@@ -429,9 +429,11 @@ def apply_proposal(draft: dict, run: int) -> str:
             json.dumps(draft, indent=2, ensure_ascii=False), encoding="utf-8")
         pr_text = pr_markdown(draft)
         (props / "PR.md").write_text(pr_text, encoding="utf-8")
-        # PR body also becomes the commit message
+        # PR body also becomes the commit message; keep the scratch message
+        # file OUTSIDE proposals/ so it never leaks into the PR's diff.
+        BEATS_DIR.mkdir(exist_ok=True)
         title = pr_text.splitlines()[0].lstrip("# ").strip()
-        msg_path = props / ".commit-msg"
+        msg_path = BEATS_DIR / f"commit-{branch}.msg"
         msg_path.write_text(f"{title}\n\n"
                             + (draft.get("pr", {}).get("body")
                                or draft.get("summary", ""))
@@ -567,7 +569,8 @@ def run_beat(claude: str, today: str, max_attempts: int) -> int:
     (run_dir / "PR.md").write_text(pr_markdown(draft), encoding="utf-8")
 
     st["state"] = "PROPOSED"; st["run"] = run; st["last_dream"] = today
-    st["branch"] = branch; st["proposal"] = str((props / "PR.md").relative_to(LOOP12))
+    st["branch"] = branch
+    st["proposal"] = str((props / "PR.md").relative_to(LOOP12)).replace("\\", "/")
     what = (draft.get("pr", {}).get("title")
             or draft.get("repeated_failure", {}).get("theme", ""))[:160]
     st["ledger"].append({"run": run, "date": today, "state": "PROPOSED",
