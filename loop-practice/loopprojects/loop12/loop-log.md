@@ -3,3 +3,4 @@
 | Run | Date | Result | What happened |
 |-----|------|--------|---------------|
 | 1 | 2026-09-03 | PROPOSED | PROPOSED claude/dream-1 — Add rule: start headless claude -p children in a trusted dir |
+| 1 | 2026-09-03 | HOLD | HOLD — awaiting human merge of claude/dream-1 |
