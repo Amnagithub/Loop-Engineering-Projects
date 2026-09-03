@@ -1,0 +1,9 @@
+run-label: 02-broken
+prompt-file: loop-practice/loopprojects/loop9/routine/prompt-broken.md
+exit-code: 0
+session-id: cae283ef-251e-4392-83f8-bf1dcf60d65e
+
+artifacts:
+  STATUS.json       coarse status line (the "status column")
+  transcript.jsonl  FULL transcript: every tool call + text of the run
+  stderr.log        any launch-time errors

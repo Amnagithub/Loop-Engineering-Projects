@@ -1,0 +1,9 @@
+run-label: 01-good
+prompt-file: loop-practice/loopprojects/loop9/routine/prompt.md
+exit-code: 0
+session-id: a720efab-38d1-484a-b41f-4db7c0e8a04d
+
+artifacts:
+  STATUS.json       coarse status line (the "status column")
+  transcript.jsonl  FULL transcript: every tool call + text of the run
+  stderr.log        any launch-time errors

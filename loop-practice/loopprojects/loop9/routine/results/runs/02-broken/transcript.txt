@@ -1,0 +1,39 @@
+  [thinking…]
+
+CLAUDE: This routine's whole point is its failure mode: Step 1 points at an input file that should not exist, and the instruction is to STOP and report rather than improvise. Let me first verify the file's absence before reporting anything.
+
+TOOL Glob({"pattern":"loop-practice/loopprojects/loop9/routine/**/*"})
+
+  ↳ tool_result: loop-practice\loopprojects\loop9\routine\prompt.md
+loop-practice\loopprojects\loop9\routine\prompt-broken.md
+loop-practice\loopprojects\loop9\routine\results\.gitkeep
+loop-practice\loopprojects\loop9\routine\context.md
+loop-practice\loopprojects\loop9\routine\render-transcript.js
+loop-practice\loopprojects\loop9\routine\run-routine.sh
+loop-practice\loopprojects\loop9\routine\results\runs\01-good\s…
+
+TOOL Glob({"pattern":"loop-practice/loopprojects/loop9/routine/inputs/*"})
+
+  ↳ tool_result: No files found
+
+  [thinking…]
+
+CLAUDE: Verified. The situation is unambiguous:
+
+- The input file `loop-practice/loopprojects/loop9/routine/inputs/recent-commits-do-not-exist.md` does not exist — in fact the entire `inputs/` directory is absent from the routine tree (confirmed by globbing both `routine/**` and `routine/inputs/*`).
+
+## STOP — input file missing
+
+**Error:** Step 1's input file is missing/unreadable:
+`loop-practice/loopprojects/loop9/routine/inputs/recent-commits-do-not-exist.md`
+
+Per the routine's explicit instruction, I am stopping immediately and will **not** improvise or substitute other input. Therefore:
+
+- ✗ No commit hashes were sourced (I did not pull recent commits from `git log`).
+- ✗ No `results/commit-summary.md` was written.
+- ✗ No `claude/summary` branch was created and no commit was made.
+- ✗ Nothing on disk was touched.
+
+**Definition of done NOT met** — the precondition for Step 1 (readable input file listing 5 commit hashes) failed, so none of the downstream steps (summaries, branch, commit) can legitimately run. This is the designed failure mode of the broken prompt: a clean stop-and-report rather than a silent workaround.
+
+Reported run date: 2026-09-03.

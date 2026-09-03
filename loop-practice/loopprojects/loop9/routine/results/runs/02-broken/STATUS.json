@@ -1,0 +1,11 @@
+{
+  "status_line": {
+    "subtype": "success",
+    "is_error": false,
+    "terminal_reason": "completed",
+    "stop_reason": "end_turn",
+    "result": "Verified. The situation is unambiguous:\n\n- The input file `loop-practice/loopprojects/loop9/routine/inputs/recent-commits-do-not-exist.md` does not exist — in fact the entire `inputs/` directory is absent from the routine tree (confirmed by globbing both `routine/**` and `routine/inputs/*`).\n\n## STOP — input file missing\n\n**Error:** Step 1's input file is missing/unreadable:\n`loop-practice/loopprojects/loop9/routine/inputs/recent-commits-do-not-exist.md`\n\nPer the routine's explicit instruction, I am stopping immediately and will **not** improvise or substitute other input. Therefore:\n\n- ✗ No commit hashes were sourced (I did not pull recent commits from `git log`).\n- ✗ No `results/commit-summary.md` was written.\n- ✗ No `claude/summary` branch was created and no commit was made.\n- ✗ Nothing on disk was touched.\n\n**Definition of done NOT met** — the precondition for Step 1 (readable input file listing 5 commit hashes) failed, so none of the downstream steps (summaries, branch, commit) can legitimately run. This is the designed failure mode of the broken prompt: a clean stop-and-report rather than a silent workaround.\n\nReported run date: 2026-09-03.",
+    "total_cost_usd": 0.142672
+  },
+  "session_id": "cae283ef-251e-4392-83f8-bf1dcf60d65e"
+}

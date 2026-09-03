@@ -1,0 +1,11 @@
+{
+  "status_line": {
+    "subtype": "success",
+    "is_error": false,
+    "terminal_reason": "completed",
+    "stop_reason": "end_turn",
+    "result": "Routine complete. ✅\n\n**Definition of done met:**\n- Summary file exists on `claude/summary` ✓\n- Branch's newest commit (`27e803b`) contains exactly one file change (the summary) ✓\n\n**Outputs:**\n- **File written:** `loop-practice/loopprojects/loop9/routine/results/commit-summary.md`\n- **Summary commit hash:** `27e803b`\n\nSummary of what was done:\n1. Read `routine/context.md` — found the 5 commit hashes (newest first).\n2. Retrieved one-line descriptions for each hash via `git show -s --format='%h %ad %s' --date=short`.\n3. Wrote `routine/results/commit-summary.md` with the run date, one bullet per commit, and a takeaway.\n4. Created branch `claude/summary` (did not exist), committed only the summary file with message `routine: commit summary 2026-09-03`, then switched back to `main`. Did **not** push.\n5. Printed the path and hash above.",
+    "total_cost_usd": 0.259602
+  },
+  "session_id": "a720efab-38d1-484a-b41f-4db7c0e8a04d"
+}
