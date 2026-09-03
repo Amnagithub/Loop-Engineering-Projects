@@ -33,7 +33,7 @@ per-run token cost **measured, not guessed** (see `runs/` + `cost.md`).
 | **2. Spine** | `progress.md` + `state.json` | `progress.md` is *generated* from `state.json` each beat — Last Run / Findings / Already Reported / **Needs Human** sections; `state.json` is the machine truth. |
 | **3. Skill files** | `skills/maker-skill.md`, `skills/checker-skill.md` | The two agent contracts: what the Implementer may write and how the Reviewer certifies it. |
 | **4. Maker-Checker** | `loop.py` phases M + C | Implementer drafts; an **independent** fresh-context Reviewer re-derives every claim from the files and replies only `VERDICT: PASS|FAIL`. The orchestrator merges on PASS only. |
-| **5. Isolation** | `loop.py` `git archive` snapshot | Agents work in a **throwaway snapshot of HEAD** in `%TEMP%`, never the live tree. A hash manifest proves the Maker touched no source. Optional `--no-isolation` for development. |
+| **5. Isolation** | `loop.py` `git archive` snapshot | Agents work in a **throwaway snapshot of HEAD** under the git-ignored `.loop8-beats/` dir, never the live tree. A hash manifest proves the Maker touched no source. Optional `--no-isolation` for development. |
 | **6. Logging + cost** | `loop-log.md`, `runs/`, `usage.csv`, `cost.md` | One log row per beat; every agent run's JSON + usage tokens preserved under `runs/`; `cost.md` regenerated from measured rows. |
 | **7. Budget / guards** | `loop.py` `MAX_ATTEMPTS=3` | Each beat allows up to 3 Maker+Checker rounds. Exhaustion → `ESCALATED`, `State: NEEDS_HUMAN`; later beats **HOLD**. A Maker that edits sources → immediate **safety stop**. |
 | **8. README** | this file | You are reading it. |
@@ -111,13 +111,21 @@ safety-stop escalation.
 ## Isolation
 
 The Maker and Checker never see your working tree. `loop.py` materialises
-`git archive HEAD` into a throwaway `%TEMP%\loop8-beat-*` snapshot and runs the
-agents there with `--permission-mode acceptEdits`; only the reviewed draft is
-copied back. A SHA-1 manifest (taken after the candidates are written) is
-re-hashed after the Maker runs — any change outside the loop8 `runs/` scratch
-dir aborts the beat. The live tree only ever changes by the orchestrator's own
-atomic commit of the reviewed result. (A `git worktree` would isolate the same
-way; the snapshot is lighter and leaves no branches behind.)
+`git archive HEAD` into a throwaway snapshot under the git-ignored
+`loop8/.loop8-beats/` dir and runs the agents there with
+`--permission-mode acceptEdits`; only the reviewed draft is copied back. A
+SHA-1 manifest (taken after the candidates are written) is re-hashed after the
+Maker runs — any change outside the loop8 `runs/` scratch dir aborts the beat.
+The live tree only ever changes by the orchestrator's own atomic commit of the
+reviewed result. (A `git worktree` would isolate the same way; the snapshot is
+lighter and leaves no branches behind.)
+
+Why `.loop8-beats/` and not `%TEMP%`? A headless `claude -p` child whose
+working directory is an untrusted folder (anything outside this repo's tree)
+stalls on the *folder-trust prompt* — no human is there to approve it, so the
+beat hangs forever. The snapshot must live inside an already-trusted directory;
+`.loop8-beats/` is that directory and is git-ignored so it never pollutes the
+tree or the scan.
 
 ## Cost awareness
 
@@ -131,8 +139,33 @@ the timer when `State: NEEDS_HUMAN`.
 
 ## Results (project executed 2026-09-03)
 
-_(One real beat is run as part of this project's build — results, measured
-cost, and lessons are appended here and in `progress.md` after the run.)_
+**Beat 1 — SUCCESS** (real run, two fresh headless Claude agents):
+
+- `scan.py` found **8 candidate lines**; the Maker triaged **all 8 as noise**
+  (the scanner's own tag table/regex and the skill docs that must name the
+  tags — `tool_doc`, not debt). **0 real markers** — the repo is genuinely
+  debt-clean today.
+- The **Checker did real work**: it re-opened every excluded line and confirmed
+  each was tool-doc prose, and verified coverage was complete
+  (`8 real + excluded == scan_total`, nothing invented, nothing missed).
+- **Measured cost:** Maker 41,112 in + 12,738 out; Checker 24,051 in + 7,102
+  out → **65,163 input + 19,840 output tokens** for the beat (2 agent runs;
+  `usage.csv`, `cost.md`). At reference rates that is **~$4.90–24.65/month**
+  for a once-daily schedule, dominated by the per-run harness overhead ×2.
+- The spine (`progress.md`), `loop-log.md`, `cost.md`, and `runs/` artifacts
+  were all updated and committed as one atomic beat commit.
+
+Two build-time notes, disclosed: an early design put the agent snapshot in
+`%TEMP%`, and a headless `claude -p` child there **stalled on the folder-trust
+prompt** — the fix moved the snapshot to the git-ignored `.loop8-beats/` dir
+inside the repo, which starts instantly and stays isolated. A throwaway
+micro-test (~16k tokens) and that first stalled attempt (~43k tokens) were
+one-time build costs, not part of the measured beat.
+
+**Not yet observed:** the ESCALATE → `NEEDS_HUMAN` → HOLD path is exercised only
+when a real failure happens (a Checker that keeps failing, or a Maker that
+touches a source file). It is wired and documented but has not fired — a clean
+first day is the honest outcome of scanning a clean repo.
 
 ## Run it unattended (next steps)
 

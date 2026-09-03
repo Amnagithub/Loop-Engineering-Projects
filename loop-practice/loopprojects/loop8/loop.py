@@ -369,6 +369,8 @@ def build_cost() -> str:
                      f" {len(rs)} |")
     mean_in = tot_in / n_beats
     mean_out = tot_out / n_beats
+    monthly_in = mean_in * 30
+    monthly_out = mean_out * 30
     lines += [
         "",
         f"Totals over {n_beats} beat(s): **{tot_in:,} input + {tot_out:,} output"
@@ -376,8 +378,8 @@ def build_cost() -> str:
         "",
         "## Monthly projection (once per day, 30 runs)",
         "",
-        f"- Input: {mean_in:,.0f} × 30 ≈ **{mean_in*30:,.0f} tokens/month**",
-        f"- Output: {mean_out:,.0f} × 30 ≈ **{mean_out*30:,.0f} tokens/month**",
+        f"- Input: {mean_in:,.0f} × 30 ≈ **{monthly_in:,.0f} tokens/month**",
+        f"- Output: {mean_out:,.0f} × 30 ≈ **{monthly_out:,.0f} tokens/month**",
         "",
         "Dollars = `tokens × provider $/MTok / 1,000,000`. The dominant term is",
         "the per-invocation harness overhead paid for every agent run, not the",
@@ -385,9 +387,14 @@ def build_cost() -> str:
         "",
         "| Rate tier | Input $/MTok | Output $/MTok | ~Cost/month |",
         "|-----------|--------------|---------------|-------------|",
-        "| Haiku 4.5-tier | $1.00 | $5.00 | ~$0.30–0.60 |",
-        "| Sonnet 5-tier | $2.00 | $10.00 | ~$0.60–1.20 |",
-        "| Opus 5-tier | $5.00 | $25.00 | ~$1.50–3.00 |",
+    ] + [
+        f"| {name} | ${rin:.2f} | ${rout:.2f} | ~${usd:,.2f} |"
+        for name, rin, rout, usd in (
+            ("Haiku 4.5-tier", 1.0, 5.0, monthly_in / 1e6 * 1.0 + monthly_out / 1e6 * 5.0),
+            ("Sonnet 5-tier", 2.0, 10.0, monthly_in / 1e6 * 2.0 + monthly_out / 1e6 * 10.0),
+            ("Opus 5-tier", 5.0, 25.0, monthly_in / 1e6 * 5.0 + monthly_out / 1e6 * 25.0),
+        )
+    ] + [
         "",
         "Two things to *not* trust: (1) `total_cost_usd` in the run JSON is a",
         "guess — the harness reports it with `costBasis: unknown`; the token",

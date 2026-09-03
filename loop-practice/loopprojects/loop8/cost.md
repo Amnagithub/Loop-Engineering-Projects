@@ -8,14 +8,14 @@ JSON (see `runs/`). Numbers below are **measured**, not modelled.
 
 | Beat | Date | Input | Output | Cache-read | Agent runs |
 |------|------|-------|--------|------------|------------|
-| 1 | 2026-09-03 | 108,331 | 67,302 | 1,922,688 | 3 |
+| 1 | 2026-09-03 | 65,163 | 19,840 | 391,552 | 2 |
 
-Totals over 1 beat(s): **108,331 input + 67,302 output tokens**; mean ~108,331 input per beat.
+Totals over 1 beat(s): **65,163 input + 19,840 output tokens**; mean ~65,163 input per beat.
 
 ## Monthly projection (once per day, 30 runs)
 
-- Input: 108,331 × 30 ≈ **3,249,930 tokens/month**
-- Output: 67,302 × 30 ≈ **2,019,060 tokens/month**
+- Input: 65,163 × 30 ≈ **1,954,890 tokens/month**
+- Output: 19,840 × 30 ≈ **595,200 tokens/month**
 
 Dollars = `tokens × provider $/MTok / 1,000,000`. The dominant term is
 the per-invocation harness overhead paid for every agent run, not the
@@ -23,9 +23,9 @@ loop's own content. Reference rates (illustrative only):
 
 | Rate tier | Input $/MTok | Output $/MTok | ~Cost/month |
 |-----------|--------------|---------------|-------------|
-| Haiku 4.5-tier | $1.00 | $5.00 | ~$0.30–0.60 |
-| Sonnet 5-tier | $2.00 | $10.00 | ~$0.60–1.20 |
-| Opus 5-tier | $5.00 | $25.00 | ~$1.50–3.00 |
+| Haiku 4.5-tier | $1.00 | $5.00 | ~$4.93 |
+| Sonnet 5-tier | $2.00 | $10.00 | ~$9.86 |
+| Opus 5-tier | $5.00 | $25.00 | ~$24.65 |
 
 Two things to *not* trust: (1) `total_cost_usd` in the run JSON is a
 guess — the harness reports it with `costBasis: unknown`; the token
