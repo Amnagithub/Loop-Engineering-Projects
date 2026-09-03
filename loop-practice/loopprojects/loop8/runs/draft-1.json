@@ -1,0 +1,48 @@
+{
+  "date": "2026-09-03",
+  "run": 1,
+  "scan_total": 8,
+  "real": [],
+  "excluded": [
+    {
+      "path": "loop-practice/loopprojects/loop8/scan.py",
+      "line": 5,
+      "reason": "tool_doc"
+    },
+    {
+      "path": "loop-practice/loopprojects/loop8/scan.py",
+      "line": 35,
+      "reason": "tool_doc"
+    },
+    {
+      "path": "loop-practice/loopprojects/loop8/scan.py",
+      "line": 36,
+      "reason": "tool_doc"
+    },
+    {
+      "path": "loop-practice/loopprojects/loop8/skills/maker-skill.md",
+      "line": 21,
+      "reason": "tool_doc"
+    },
+    {
+      "path": "loop-practice/loopprojects/loop8/skills/maker-skill.md",
+      "line": 22,
+      "reason": "tool_doc"
+    },
+    {
+      "path": "loop-practice/loopprojects/loop8/skills/maker-skill.md",
+      "line": 34,
+      "reason": "tool_doc"
+    },
+    {
+      "path": "loop-practice/loopprojects/loop8/skills/maker-skill.md",
+      "line": 37,
+      "reason": "tool_doc"
+    },
+    {
+      "path": "loop-practice/loopprojects/loop8/skills/maker-skill.md",
+      "line": 58,
+      "reason": "tool_doc"
+    }
+  ]
+}

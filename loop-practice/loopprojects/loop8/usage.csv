@@ -1,2 +1,4 @@
 run,date,phase,attempt,input_tokens,output_tokens,cache_read,result
 1,2026-09-03,maker,1,43168,47462,1531136,OK
+1,2026-09-03,maker,1,41112,12738,267904,OK
+1,2026-09-03,checker,1,24051,7102,123648,PASS

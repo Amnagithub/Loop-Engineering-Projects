@@ -8,16 +8,20 @@ by `loop.py` from `state.json`; do not hand-edit it.
 
 ## Last Run
 
-- **Run:** 0
-- **When:** —
-- **Result:** —
-- **Reason:** —
+- **Run:** 1
+- **When:** 2026-09-03
+- **Result:** SUCCESS
+- **Reason:** checker PASS — reviewed draft accepted
 - **Consecutive failures:** 0
 - **State:** RUNNING _(RUNNING | NEEDS_HUMAN)_
 
 ## Findings
 
-_(No beat has run yet. `python loop.py --date YYYY-MM-DD` runs the first one.)_
+### 2026-09-03 — SUCCESS (run 1)
+
+New: 0 · Existing open: 0 · Resolved: 0
+
+- No new debt markers.
 
 ## Already Reported
 

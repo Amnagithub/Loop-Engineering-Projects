@@ -1,0 +1,83 @@
+{
+  "repo_root": "C:\\Users\\The-laptop-store\\Documents\\GitHub\\Loop-Engineering-Projects\\loop-practice\\loopprojects\\loop8\\.loop8-beats\\beat-tdswexj8\\snapshot",
+  "generated": "2026-09-03T10:51:12",
+  "count": 8,
+  "lines": [
+    {
+      "path": "loop-practice/loopprojects/loop8/scan.py",
+      "line": 5,
+      "tags": [
+        "TODO",
+        "FIXME",
+        "HACK",
+        "XXX"
+      ],
+      "text": "(``TODO`` / ``FIXME`` / ``HACK`` / ``XXX``). It does NOT decide whether a hit is"
+    },
+    {
+      "path": "loop-practice/loopprojects/loop8/scan.py",
+      "line": 35,
+      "tags": [
+        "TODO",
+        "FIXME",
+        "HACK",
+        "XXX"
+      ],
+      "text": "TAGS = (\"TODO\", \"FIXME\", \"HACK\", \"XXX\")"
+    },
+    {
+      "path": "loop-practice/loopprojects/loop8/scan.py",
+      "line": 36,
+      "tags": [
+        "TODO",
+        "FIXME",
+        "HACK",
+        "XXX"
+      ],
+      "text": "TAG_RE = re.compile(r\"\\b(?:TODO|FIXME|HACK|XXX)\\b\")"
+    },
+    {
+      "path": "loop-practice/loopprojects/loop8/skills/maker-skill.md",
+      "line": 21,
+      "tags": [
+        "TODO",
+        "FIXME",
+        "HACK"
+      ],
+      "text": "  in the repo that contains a **whole-word** debt tag (`TODO`, `FIXME`, `HACK`,"
+    },
+    {
+      "path": "loop-practice/loopprojects/loop8/skills/maker-skill.md",
+      "line": 22,
+      "tags": [
+        "XXX"
+      ],
+      "text": "  `XXX`). These are *candidates*, not verdicts."
+    },
+    {
+      "path": "loop-practice/loopprojects/loop8/skills/maker-skill.md",
+      "line": 34,
+      "tags": [
+        "TODO"
+      ],
+      "text": "     comment, an inline flag, a `- [ ] TODO:` task-list checkbox, a `# TODO`"
+    },
+    {
+      "path": "loop-practice/loopprojects/loop8/skills/maker-skill.md",
+      "line": 37,
+      "tags": [
+        "TODO",
+        "FIXME"
+      ],
+      "text": "     * prose that *discusses* markers (\"no TODO or FIXME comments remain\","
+    },
+    {
+      "path": "loop-practice/loopprojects/loop8/skills/maker-skill.md",
+      "line": 58,
+      "tags": [
+        "TODO"
+      ],
+      "text": "      \"tags\": [\"TODO\"],"
+    }
+  ]
+}
