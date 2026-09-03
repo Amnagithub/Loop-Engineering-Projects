@@ -159,8 +159,17 @@ def git(args: list[str], cwd: Path = REPO_ROOT) -> str:
 
 
 def make_snapshot() -> Path:
-    """Materialise HEAD into a throwaway dir; return the temp root (parent)."""
-    tmp = Path(tempfile.mkdtemp(prefix="loop8-beat-", dir=tempfile.gettempdir()))
+    """Materialise HEAD into a throwaway dir; return that dir's parent.
+
+    The snapshot lives under LOOP8/.loop8-beats/ (git-ignored) rather than
+    %TEMP%: a headless `claude -p` child run in an untrusted temp folder stalls
+    on the folder-trust prompt, while a path inside the already-trusted repo
+    tree starts immediately. It is still fully isolated: it is never tracked,
+    the agents only ever run there, and only the reviewed draft is copied out.
+    """
+    beats_root = LOOP8 / ".loop8-beats"
+    beats_root.mkdir(exist_ok=True)
+    tmp = Path(tempfile.mkdtemp(prefix="beat-", dir=str(beats_root)))
     snap = tmp / "snapshot"
     snap.mkdir()
     arc = subprocess.run(["git", "-C", str(REPO_ROOT), "archive", "--format=tar",
@@ -179,7 +188,8 @@ def _hash_files(root: Path) -> dict:
     out = {}
     for dirpath, dirnames, filenames in os.walk(root):
         dirnames[:] = [d for d in dirnames
-                       if d not in (".git", "__pycache__", ".loop8")]
+                       if d not in (".git", "__pycache__", ".loop8",
+                                    ".loop8-beats")]
         for name in filenames:
             p = Path(dirpath) / name
             rel = str(p.relative_to(root)).replace("\\", "/")
